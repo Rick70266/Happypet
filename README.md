@@ -6,7 +6,8 @@
 ## 這個資料夾裡有什麼
 
 - `app.py`：Streamlit 主程式，**部署時的主檔案一定要選它**。
-- `requirements.txt`：Streamlit Cloud 安裝用的套件清單（streamlit、pandas、Pillow）。
+- `requirements.txt`：Streamlit Cloud 安裝用的套件清單（streamlit、pandas、Pillow、plotly，可點地圖需要 plotly）。
+- v2 改動：電腦版地圖縮小為 340px 寬、用 Plotly 疊在台灣圖上可點圖釘切換報告，下方另有 1-14 號按鈕備援；手機版用頂部「手機版」開關完全隱藏地圖、直接看數據；排行不再用可點欄位排序的表格，改用上方「排序依據」下拉重算排名，第 1 名永遠在最上面，手機版排行改為卡片式。
 - `stores.csv`：14 間門市的地址、經緯度與示範數據。要換數字、增減門市，改這個檔案就好。
 - `assets/taiwan-map.jpg`：台灣地圖底圖，上傳時要保留 `assets/` 資料夾結構。
 - `.streamlit/config.toml`：紅色主題設定，可有可無。
