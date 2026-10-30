@@ -1,50 +1,38 @@
-# 寵物好事門市營運數據報告（Streamlit 版）
+# 寵物好事門市營運數據報告（Streamlit 版 v3，無地圖、左邊選單）
 
-作品示範頁：用 Streamlit 把 14 間門市的月至今／年至今營運報告做成可互動的網頁。
-**所有營運數字皆為作品示範數據，非寵物好事實際營運數據。**
+作品示範頁：左邊是頁面選單，右邊是數據呈現；手機上選單會自動縮成左上角箭頭，點一下才打開。
+**所有營運數字、商品、廠商、庫存皆為作品示範數據，非寵物好事實際營運數據。**
+
+## 左邊選單六頁
+
+- **首頁**：營運總表（年至今）。全台總營業額、營業額達成率、營業額成長率、來客數、來客數成長率、毛利率及毛利額，外加目前營業額達成率前三名與最後兩名，以及全台總表。
+- **業績狀況**：各店各項營業表現數據。表頭點一下可排序，第一次點由大到小，再點一下由小到大；排序後排名會重算，第 1 名永遠在最上面，排名欄本身不可點。
+- **來客狀況**：各店來客表現數據（來客數、來客成長率、客單價、來客佔全台比等），同樣表頭可點排序、排名重算。
+- **促銷品各店銷售業績狀況**：先給全台總數據（促銷總業績、總數量、佔年至今業績比）與賣最好的 TOP5 商品，再依照各店業績排名，點開每一間看該店賣最好的 TOP5 商品。
+- **各店呆滯品項**：點選店別切換數據，欄位：貨號、商品名稱、廠商名稱、廠商編號、呆滯天數、庫存、庫存金額。定義：超過 90 天未動銷（呆滯天數 >= 91 天）。
+- **各店滯銷品項**：點選店別切換數據，欄位同上。定義：超過 30 天未動銷，但未達呆滯標準（呆滯天數 31-90 天），兩張表不重複，方便分層處理。
 
 ## 這個資料夾裡有什麼
 
-- `app.py`：Streamlit 主程式，**部署時的主檔案一定要選它**。
-- `requirements.txt`：Streamlit Cloud 安裝用的套件清單（streamlit、pandas、Pillow、plotly，可點地圖需要 plotly）。
-- v2 改動：電腦版地圖縮小為 340px 寬、用 Plotly 疊在台灣圖上可點圖釘切換報告，下方另有 1-14 號按鈕備援；手機版用頂部「手機版」開關完全隱藏地圖、直接看數據；排行不再用可點欄位排序的表格，改用上方「排序依據」下拉重算排名，第 1 名永遠在最上面，手機版排行改為卡片式。
-- `stores.csv`：14 間門市的地址、經緯度與示範數據。要換數字、增減門市，改這個檔案就好。
-- `assets/taiwan-map.jpg`：台灣地圖底圖，上傳時要保留 `assets/` 資料夾結構。
-- `.streamlit/config.toml`：紅色主題設定，可有可無。
+- `app.py`：Streamlit 主程式，**部署時的主檔案一定要選它，放在 repo 根目錄**。
+- `requirements.txt`：streamlit、pandas（v3 已拿掉地圖，不再需要 plotly、Pillow）。
+- `stores.csv`：14 間門市的月至今／年至今示範數據。
+- `products.csv`：24 項示範商品（貨號、商品名稱、廠商名稱、廠商編號、類別、售價）。
+- `promo_sales.csv`：各店 × 各商品的促銷數量與促銷業績（示範）。
+- `slow_items.csv`：各店的慢動銷品項（呆滯天數、庫存、庫存金額，示範）。
+- `.streamlit/config.toml`：紅色主題設定。
 
-## 是不是一定要 app.py？
+地圖已拿掉，舊版的 `assets/taiwan-map.jpg` 不再需要；若你的 GitHub repo 裡還留著 `assets/`，可以刪掉，不影響 v3 運作。
 
-對，Streamlit 的運作方式就是這樣：
+## 上傳與部署（沿用原本的 repo 即可）
 
-1. GitHub 上放一個 repo，裡面有 `app.py`。
-2. Streamlit Cloud 去讀那個 repo，用 `requirements.txt` 安裝套件，再執行 `app.py`。
-3. `app.py` 跑起來就是一個網頁，不用另外寫 HTML。
+1. 把這個資料夾「裡面」的檔案，推到你原本的 GitHub repo 根目錄，覆蓋舊的 `app.py`、`requirements.txt`，並新增 `products.csv`、`promo_sales.csv`、`slow_items.csv`。
+2. Streamlit Cloud 偵測到 push 後會自動重新部署，原本的網址不變，不用重建 app。
+3. 若用網頁上傳：GitHub repo 頁面按 `Add file` → `Upload files`，確認根目錄有 `app.py`，不是多包一層資料夾。
 
-所以你不能只上傳一張 HTML 就叫 Streamlit 跑，**一定要有 `app.py` 當入口**，而且 `app.py` 要放在 repo 的根目錄（最外層），不要包在第二層資料夾裡。
+## 手機版怎麼看選單
 
-## 上傳到 GitHub 的步驟
-
-1. 到 GitHub 新增一個 repo，例如 `pet-good-report`，先不要勾選 README（避免衝突），或建好後再覆蓋。
-2. 把這個資料夾裡的**全部檔案**，照原來的資料夾結構上傳，確認根目錄有 `app.py`、`requirements.txt`、`stores.csv`，而且有 `assets/taiwan-map.jpg`。
-   - 網頁上傳：GitHub repo 頁面按 `Add file` → `Upload files`，把檔案拖進去，記得 `assets/` 也要一起上傳。
-   - 或用 Git 指令（在這個資料夾裡執行）：
-     ```bash
-     git init
-     git add .
-     git commit -m "Pet Good store report"
-     git branch -M main
-     git remote add origin https://github.com/你的帳號/pet-good-report.git
-     git push -u origin main
-     ```
-3. 上傳完成後，檢查 GitHub 上 `app.py` 是在根目錄，不是 `pet-good-streamlit/app.py` 這種第二層。
-
-## 部署到 Streamlit Cloud 的步驟
-
-1. 打開 https://share.streamlit.io ，用 GitHub 帳號登入。
-2. 按 `Create app`（或 `New app`）。
-3. 選你的 repo（`pet-good-report`）、branch（`main`）、主檔案填 `app.py`。
-4. 按 `Deploy`，等它安裝完成，畫面會給你一個 `https://xxx.streamlit.app` 的網址，那就是可以分享的網頁。
-5. 之後只要在 GitHub 上改 `stores.csv` 或 `app.py` 並 push，Streamlit Cloud 就會自動重新部署，不用重走一次流程。
+Streamlit 的左邊選單在手機上會自動縮起來，只剩左上角一個箭頭（`>`），點一下選單就會打開，選完頁面後會再收起來。這就是你要的「選單縮成點擊打開選單」，不用另外寫漢堡選單。
 
 ## 在自己電腦先試跑（可選）
 
@@ -58,7 +46,6 @@ streamlit run app.py
 ## 常見問題
 
 - **Deploy 失敗說找不到 app.py**：通常是 `app.py` 不在根目錄，檢查 GitHub 上的路徑。
-- **地圖破圖**：通常是 `assets/taiwan-map.jpg` 沒一起上傳，或資料夾名稱打錯。
 - **改了 CSV 但畫面沒變**：等 Streamlit 重新部署完成再重新整理，或按右上角 `Reboot app`。
-- **免費版會休眠**：Streamlit Cloud 免費版久沒人開會休眠，下次點開要等它喚醒一下，這是正常的。
+- **排行點表頭後排名不對**：業績／來客頁的排名是排序後用 JS 重算的，若你用的是舊版 `app.py` 就不會重算，請確認 repo 裡的 `app.py` 是 v3。
 - **想要純靜態網頁、不用 Python**：那就不要走 Streamlit，改用 GitHub Pages 放 HTML 版；Streamlit 的優點是可以用 Python、CSV 直接做篩選、排序和計算，比較適合展示數據整理邏輯。
